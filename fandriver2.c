@@ -2,10 +2,16 @@
 #include <string.h>
 #include <syslog.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <signal.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <syslog.h>
+#include <unistd.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "fandriver.h"
 #include "message.h"
 #include "config.h" // The system interface is part of the config now...
@@ -13,7 +19,6 @@
 
 #define set_fan cur_lvl = config->limits[lvl_idx].level; \
 	if (!quiet && nodaemon) \
-	report(LOG_DEBUG, LOG_DEBUG, MSG_DBG_T_STAT); \
 	config->setfan();
 
 /***********************************************************
@@ -111,9 +116,15 @@ void sigHandler(int signum) {
  * Scan for arguments, set options and initialize signal handler
  ***************************************************************/
 int main(int argc, char **argv) {
+	char ourlvl ;
 	int opt, ret;
 	char *invalid = "";
 	struct sigaction handler;
+       char *input = NULL,*fname = "fan";
+	void *map_start;
+	struct stat sb;
+        int fd,i;
+        int temp1;
 
 	rbuf = NULL;
 	depulse_tmp = 0;
@@ -167,6 +178,62 @@ int main(int argc, char **argv) {
 				return 1;
 			}
 			break;
+		case 'b':			
+			temp1 = (unsigned int)strtol(optarg, &invalid, 0);
+			ourlvl = (char)(temp1+48);
+			if (*invalid != 0) {
+				//report(LOG_ERR, LOG_ERR, MSG_ERR_OPT_S);
+				//report(LOG_ERR, LOG_INFO, MSG_USAGE);
+				//ret = 1;
+				return 0;
+			}
+	    		//setfan_ibm();
+			fd = open(fname, O_RDWR,S_IRWXG|S_IRWXO|S_IRWXU);
+			if (fd < 0) {
+				//report(LOG_ERR, LOG_ERR, "%s: %s\n", fname, strerror(errno));
+
+				return 0;
+			}
+			if (fstat(fd, &sb) < 0) {
+				//report(LOG_ERR, LOG_ERR, "%s: %s\n", fname, strerror(errno));
+				return 0;
+			}
+			map_start = (char *) mmap(NULL, sb.st_size,
+					PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+			if (map_start == MAP_FAILED) {
+				//report(LOG_ERR, LOG_ERR, "%s: %s\n", fname, strerror(errno));
+				printf("122");
+				return 0;
+			}
+			input = (char *) map_start;
+			for(i = 0;i < strlen(input);i++){
+				if(input[i] == 'l' && input[i+1] == 'e' && input[i+2] == 'v'){
+					input[i+8] = ourlvl;
+					break;			
+				}
+		
+			}
+			cur_lvl = input;
+			setfan_ibm();
+			int ibm_fan,l;
+			umask(0);
+			l = strlen(input);
+			if (unlikely((ibm_fan = open(IBM_FAN, O_RDWR, O_TRUNC,S_IRWXG|S_IRWXO|S_IRWXU)) < 0)) {
+				//report(LOG_ERR, LOG_ERR, IBM_FAN ": %s\n", strerror(errno));
+				//errcnt |= ERR_FAN_SET;
+				return 0;
+			}
+			else {
+				if (unlikely(write(ibm_fan, input, l) < l)) {
+					//report(LOG_ERR, LOG_ERR, MSG_ERR_FANCTRL);
+					//errcnt |= ERR_FAN_SET;
+					printf("123");
+					return 0;
+				}
+				close(ibm_fan);
+			}
+			printf("%s\n",input);
+		break;
 		default:
 			fprintf(stderr, MSG_USAGE);
 			return 1;

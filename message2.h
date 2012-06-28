@@ -34,7 +34,11 @@
 
 #define MSG_USAGE \
  "\nproject " VERSION ": our curriculum design\n" \
- "\nUsage: Fan Driver" \
+ "\nUsage: *************************************" \
+ "\n       *******our project Fan Driver********" \
+ "\n       ***made by Shuangzhi Wu 1090310622***" \
+ "\n       *******Guokan Shang 1090310213*******" \
+ "\n       *************************************" \
  "\n -h  This help message" \
  "\n -s  Maximum cycle time in seconds (Integer. Default: 5)" \
  "\n -c  Load different configuration file (default: /etc/thinkfan.conf)" \
