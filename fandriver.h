@@ -1,3 +1,4 @@
+//by wushuangzhi
 #ifndef THINKFAN_H
 
 #define THINKFAN_H
