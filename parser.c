@@ -1,12 +1,3 @@
-/********************************************************************
- * config_parser.c: Some cheesy recursive descent parser for the config file
- *
- * This work is licensed under a Creative Commons Attribution-Share Alike 3.0
- * United States License. See http://creativecommons.org/licenses/by-sa/3.0/us/
- * for details.
- *
- * This file is part of thinkfan. See thinkfan.c for further info.
- * ******************************************************************/
 
 #include "parser.h"
 #include "globaldefs.h"
@@ -25,18 +16,9 @@ const char comment[] = "#";
 const char nonfilename[] = "\n\n{[";
 
 
-/*
- * All these functions allocate memory only for the matching result, with the
- * exception of char_alt(), which never allocates memory and instead returns a
- * pointer to the last char that has been read from **input.
- */
-
-/* Match any single char out of *items. Returns a pointer to the last read char
- * in **input. No memory is allocated, so returned chars should be copied
- * before using them. */
 char *char_alt(char **input, const char *items, const char invert) {
-	if (! **input) return NULL;//inoutÎª¿ÕÔò·µ»Ønull
-	while (*items)//items²»Îª¿Õ
+	if (! **input) return NULL;//inoutÎªï¿½ï¿½ï¿½ò·µ»ï¿½null
+	while (*items)//itemsï¿½ï¿½Îªï¿½ï¿½
 		if (**input == *(items++)) return invert ? NULL : (*input)++;
 	return invert ? (*input)++ : NULL;
 }
@@ -55,12 +37,12 @@ char *char_cat(char **input, const char *items, const char invert) {
 }
 
 /* Match an integer expression and return it as an int */
-int *parse_int(char **input) {//½ÓÊÕ±í´ïÊ½  ·µ»ØÕûÐÎÊýÖµ
+int *parse_int(char **input) {//ï¿½ï¿½ï¿½Õ±ï¿½ï¿½Ê½  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 	char *end = *input;
 	int *rv = NULL;
 	long int l;
 
-	l = strtol(*input, &end, 0);//×ª»»Îª10½øÖÆ
+	l = strtol(*input, &end, 0);//×ªï¿½ï¿½Îª10ï¿½ï¿½ï¿½ï¿½
 	if (end > *input && l <= INT_MAX && l >= INT_MIN) {
 		*input = end;
 		rv = (int *) malloc(sizeof(int));
@@ -74,7 +56,7 @@ char *parse_keyword(char **input, const char *keyword) {
 	int l = strlen(keyword);
 	char *ret = NULL;
 
-	if (!strncasecmp(*input, keyword, l)) {//strncasecmp()ÓÃÀ´±È½Ï²ÎÊýs1ºÍs2×Ö·û´®Ç°n¸ö×Ö·û£¬±È½ÏÊ±»á×Ô¶¯ºöÂÔ´óÐ¡Ð´µÄ²îÒì£¬ÏàÍ¬·µ»Ø0
+	if (!strncasecmp(*input, keyword, l)) {//strncasecmp()ï¿½ï¿½ï¿½ï¿½È½Ï²ï¿½ï¿½ï¿½s1ï¿½ï¿½s2ï¿½Ö·ï¿½Ç°nï¿½ï¿½ï¿½Ö·ï¿½È½ï¿½Ê±ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ð¡Ð´ï¿½Ä²ï¿½ï¿½ì£¬ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½0
 		ret = *input;
 		*input += l;
 	}
