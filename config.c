@@ -1,3 +1,4 @@
+//by wushuangzhi
 #include "config.h"
 #include "parser.h"
 #include <syslog.h>
