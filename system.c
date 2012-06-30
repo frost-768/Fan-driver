@@ -1,19 +1,3 @@
-/********************************************************************
- * system.c: Anything that interfaces with the operating system
- *
- * This work is licensed under a Creative Commons Attribution-Share Alike 3.0
- * United States License. See http://creativecommons.org/licenses/by-sa/3.0/us/
- * for details.
- *
- * This file contains all functions that are specific to dealing with
- * either /sys/class/hwmon or the /proc/acpi/ibm interface. They are
- * referenced in the main program via function pointers.
- *
- * This file is part of thinkfan. See thinkfan.c for further info.
- *
- * I know there's a lot of code redundancy in here, but that's expected
- * to save us some memory access in the main loop.
- * ******************************************************************/
 #include "globaldefs.h"
 #include <unistd.h>
 #include <stdio.h>
@@ -29,11 +13,7 @@
 
 const char temperatures[] = "temperatures:";
 
-/*******************************************************************
- * get_temp_ibm reads temperatures from /proc/acpi/ibm/thermal and
- * returns the highest one found.
- *******************************************************************/
-int get_temp_ibm() {//Õâ¸öº¯Êý¶ÁÈ¡ÎÂ¶È ·µ»Ø×î¸ßµÄÎÂ¶È
+int get_temp_ibm() {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½Â¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½ï¿½Â¶ï¿½
 	int i=0, res, retval=0, ibm_temp, *tmp;
 	ssize_t r;
 	char *input;
@@ -76,7 +56,7 @@ void setfan_ibm() {
 	int ibm_fan;
 	char *buf = malloc(18 * sizeof(char));
 
-	if (unlikely((ibm_fan = open(IBM_FAN, O_RDWR, O_TRUNC)) < 0)) {//´ò¿ªÎÄ¼þ³ö´íÔò·µ»Ø´íÎóÐÅÏ¢
+	if (unlikely((ibm_fan = open(IBM_FAN, O_RDWR, O_TRUNC)) < 0)) {//ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»Ø´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 		showerr(IBM_FAN);
 		errcnt++;
 	}
@@ -101,7 +81,7 @@ int init_fan_ibm() {
 	char *line = NULL;
 	size_t count = 0;
 	FILE *ibm_fan;
-	int module_valid=0;//ºÎÓÃ£¿
+	int module_valid=0;//ï¿½ï¿½ï¿½Ã£ï¿½
 
 	if ((ibm_fan = fopen(IBM_FAN, "r+")) == NULL) {
 		showerr(IBM_FAN);
@@ -116,7 +96,7 @@ int init_fan_ibm() {
 		errcnt++;
 		return ERR_FAN_INIT;
 	}
-	fprintf(ibm_fan, "watchdog %d\n", watchdog_timeout);//watchdog_timeoutºÎÓÃ£¿
+	fprintf(ibm_fan, "watchdog %d\n", watchdog_timeout);//watchdog_timeoutï¿½ï¿½ï¿½Ã£ï¿½
 	fclose(ibm_fan);
 	free(line);
 	return 0;
