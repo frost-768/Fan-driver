@@ -1,3 +1,4 @@
+//by wushuangzhi
 #include "globaldefs.h"
 #include <string.h>
 #include <syslog.h>
