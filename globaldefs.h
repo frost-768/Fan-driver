@@ -1,12 +1,3 @@
-/********************************************************************
- * globaldefs.h: Stuff that's needed by all objects
- *
- * This work is licensed under a Creative Commons Attribution-Share Alike 3.0
- * United States License. See http://creativecommons.org/licenses/by-sa/3.0/us/
- * for details.
- *
- * This file is part of thinkfan. See thinkfan.c for further info.
- * ******************************************************************/
 #ifndef GLOBALDEFS_H
 #define GLOBALDEFS_H
 
