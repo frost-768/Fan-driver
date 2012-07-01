@@ -21,10 +21,7 @@
 	if (!quiet && nodaemon) \
 	config->setfan();
 
-/***********************************************************
- * This is the main routine which periodically checks
- * temperatures and adjusts the fan according to config.
- ***********************************************************/
+
 int fancontrol() {//风扇控制函数，监控温度和转速
 	int last_temp=0, temp, lvl_idx=0, bias=0, diff=0, b_temp;
 	int wt = watchdog_timeout, st = sleeptime;
@@ -111,10 +108,7 @@ void sigHandler(int signum) {
 }
 
 
-/***************************************************************
- * Main function:
- * Scan for arguments, set options and initialize signal handler
- ***************************************************************/
+
 int main(int argc, char **argv) {
 	char ourlvl ;
 	int opt, ret;
@@ -272,10 +266,7 @@ int main(int argc, char **argv) {
 	return ret;
 }
 
-/********************************************************************
- * Outer loop. Handles signal conditions, runtime cleanup and config
- * reloading
- ********************************************************************/
+
 int run() {
 	int ret = 0, childpid;
 	struct tf_config *newconfig=NULL;
